@@ -27,58 +27,79 @@
  */
 
 require '../template/header.php';
+require '../db.php';
 ?>
 
-<!-- Inhalt -->
-<h1>Kontenplan</h1>
-<h3>Aktiven/Passiven</h3>
-<table style="padding: 0">
-    <tr>
-        <th>Nr.</th>
-        <th>Bezeichung</th>
-        <th style="text-align: right">Saldo</th>
-        <th style="text-align: right">Saldo</th>
-    </tr>
-    <tr>
-        <td><a href="account_1000.php">1000</a></td>
-        <td>Kasse</td>
-        <td style="text-align: right">1340.00</td>
-        <td>&nbsp;</td>
-    </tr>
-    <tr>
-        <td><a href="account_1050.php">1050</td>
-        <td>Warenbestand</td>
-        <td style="text-align: right">230.00</td>
-        <td>&nbsp;</td>
-    </tr>
-    <tr>
-        <td><a href="account_2100.php">2100</td>
-        <td>Eigenkapital</td>
-        <td>&nbsp;</td>
-        <td style="text-align: right">1000.00</td>
-    </tr>
-</table>
-<h3>Aufwand/Ertrag</h3>
-<table style="padding: 0">
-    <tr>
-        <th>Nr.</th>
-        <th>Bezeichung</th>
-        <th style="text-align: right">Saldo</th>
-        <th style="text-align: right">Saldo</th>
-    </tr>
-    <tr>
-        <td><a href="account_3000.php">3000</td>
-        <td>Warenertrag</td>
-        <td>&nbsp;</td>
-        <td style="text-align: right">1140.00</td>
-    </tr>
-    <tr>
-        <td><a href="account_4000.php">4000</td>
-        <td>Warenaufwand</td>
-        <td style="text-align: right">1030.00</td>
-        <td>&nbsp;</td>
-    </tr>
-</table>
+    <!-- Inhalt -->
+    <h1>Kontenplan</h1>
+    <h3>Aktiven/Passiven</h3>
+    <table style="padding: 0">
+        <tr>
+            <th>Nr.</th>
+            <th>Bezeichung</th>
+            <th style="text-align: right">Saldo</th>
+            <th style="text-align: right">Saldo</th>
+        </tr>
+        <?php
+        $res = mysqli_query($con, "SELECT `id`, `description` FROM `account` WHERE `cat` = '1'");
+
+        for ($i = 0; $i < mysqli_num_rows($res); $i++) {
+            $data = mysqli_fetch_assoc($res);
+            $nr = $data['id'];
+            $desc = $data['description'];
+            echo "<tr>";
+            echo "<td><a href='account_$nr.php'>$nr</a></td>";
+            echo "<td>$desc</td>";
+            $res2 = mysqli_query($con, "SELECT sum(`amount`) as a FROM `transaction` WHERE `account_1` = '$nr' AND `account_2` != '$nr'");
+            if (mysqli_num_rows($res2) == 1) {
+                $data2 = mysqli_fetch_assoc($res2);
+                echo "<td>" . $data2['a'] . "</td>";
+            } else
+                echo "<td>&nbsp;</td>";
+            $res2 = mysqli_query($con, "SELECT sum(`amount`) as a FROM `transaction` WHERE `account_2` = '$nr' AND `account_1` != '$nr'");
+            if (mysqli_num_rows($res2) == 1) {
+                $data2 = mysqli_fetch_assoc($res2);
+                echo "<td>" . $data2['a'] . "</td>";
+            } else
+                echo "<td>&nbsp;</td>";
+            echo "</tr>";
+        }
+        ?>
+    </table>
+    <h3>Aufwand/Ertrag</h3>
+    <table style="padding: 0">
+        <tr>
+            <th>Nr.</th>
+            <th>Bezeichung</th>
+            <th style="text-align: right">Saldo</th>
+            <th style="text-align: right">Saldo</th>
+        </tr>
+        <?php
+        $res = mysqli_query($con, "SELECT `id`, `description` FROM `account` WHERE `cat` = '2'");
+        for ($i = 0; $i < mysqli_num_rows($res); $i++) {
+            $data = mysqli_fetch_assoc($res);
+            $nr = $data['id'];
+            $desc = $data['description'];
+            echo "<tr>";
+            echo "<td><a href='account_$nr.php'>$nr</a></td>";
+            echo "<td>$desc</td>";
+            $res2 = mysqli_query($con, "SELECT sum(`amount`) as a FROM `transaction` WHERE `account_1` = '$nr' AND `account_2` != '$nr'");
+            if (mysqli_num_rows($res2) == 1) {
+                $data2 = mysqli_fetch_assoc($res2);
+                echo "<td>" . $data2['a'] . "</td>";
+            } else
+                echo "<td>&nbsp;</td>";
+            $res2 = mysqli_query($con, "SELECT sum(`amount`) as a FROM `transaction` WHERE `account_2` = '$nr' AND `account_1` != '$nr'");
+            if (mysqli_num_rows($res2) == 1) {
+                $data2 = mysqli_fetch_assoc($res2);
+                echo "<td>" . $data2['a'] . "</td>";
+            } else
+                echo "<td>&nbsp;</td>";
+            echo "</tr>";
+        }
+        ?>
+
+    </table>
 
 <?php
 require '../template/footer.php';

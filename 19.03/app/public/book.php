@@ -27,6 +27,7 @@
  */
 
 require '../template/header.php';
+require '../db.php';
 ?>
 
 <!-- Inhalt -->
@@ -39,48 +40,39 @@ require '../template/header.php';
         <th>Text</th>
         <th style="text-align: right">Betrag</th>
     </tr>
-    <tr>
-        <td>01.01.2004</td>
-        <td>1000</td>
-        <td>2100</td>
-        <td>Bareinlage</td>
-        <td style="text-align: right">1000.00</td>
-    </tr>
-    <tr>
-        <td>01.01.2004</td>
-        <td>4000</td>
-        <td>1000</td>
-        <td>Otto, u/Kauf, 80 Uhren</td>
-        <td style="text-align: right">800.00</td>
-    </tr>
-    <tr>
-        <td>08.01.2004</td>
-        <td>1000</td>
-        <td>3000</td>
-        <td>Strasse, u/Verkauf, 20 Uhren</td>
-        <td style="text-align: right">400.00</td>
-    </tr>
-    <tr>
-        <td>15.01.2004</td>
-        <td>1000</td>
-        <td>3000</td>
-        <td>Strasse, u/Verkauf, 15 Uhren</td>
-        <td style="text-align: right">300.00</td>
-    </tr>
-    <tr>
-        <td>22.01.2004</td>
-        <td>1000</td>
-        <td>3000</td>
-        <td>Strasse, u/Verkauf, 22 Uhren</td>
-        <td style="text-align: right">440.00</td>
-    </tr>
-    <tr>
-        <td>31.01.2004</td>
-        <td>1050</td>
-        <td>4000</td>
-        <td>Inventur, 23 Uhren</td>
-        <td style="text-align: right">230.00</td>
-    </tr>
+    <?php
+    $res = mysqli_query($con, "SELECT * FROM `transaction`");
+    for ($i=0; $i<mysqli_num_rows($res); $i++) {
+        $data = mysqli_fetch_assoc($res);
+        $date = $data['date'];
+        $acc_1 = $data['account_1'];
+        $acc_2 = $data['account_2'];
+        $desc = $data['description'];
+        $amount = $data['amount'];
+        $type = $data['type'];
+
+        if ($acc_1 == $acc_2)
+            continue;
+
+        echo "<tr>";
+        echo "<td>$date</td>";
+        echo "<td>";
+        if ($type == 1)
+            echo $acc_1;
+        else
+            echo $acc_2;
+        echo "</td>";
+        echo "<td>";
+        if ($type == 1)
+            echo $acc_2;
+        else
+            echo $acc_1;
+        echo "</td>";
+        echo "<td>$desc</td>";
+        echo "<td>$amount</td>";
+        echo "</tr>";
+    }
+    ?>
 </table>
 
 <?php

@@ -27,6 +27,7 @@
  */
 
 require '../template/header.php';
+require '../db.php';
 ?>
 
 <!-- Inhalt -->
@@ -39,41 +40,35 @@ require '../template/header.php';
         <th>Soll</th>
         <th>Haben</th>
     </tr>
-    <tr>
-        <td>01.01.2004</td>
-        <td>2100</td>
-        <td>Bareinlage</td>
-        <td style="text-align: right">1000.00</td>
-        <td>&nbsp;</td>
-    </tr>
-    <tr>
-        <td>01.01.2004</td>
-        <td>4000</td>
-        <td>Otto, u/Kauf, 80 Uhren</td>
-        <td>&nbsp;</td>
-        <td style="text-align: right">800.00</td>
-    </tr>
-    <tr>
-        <td>08.01.2004</td>
-        <td>3000</td>
-        <td>Strasse, u/Verkauf, 20 Uhren</td>
-        <td style="text-align: right">400.00</td>
-        <td>&nbsp;</td>
-    </tr>
-    <tr>
-        <td>15.01.2004</td>
-        <td>3000</td>
-        <td>Strasse, u/Verkauf, 15 Uhren</td>
-        <td style="text-align: right">300.00</td>
-        <td>&nbsp;</td>
-    </tr>
-    <tr>
-        <td>22.01.2004</td>
-        <td>3000</td>
-        <td>Strasse, u/Verkauf, 22 Uhren</td>
-        <td style="text-align: right">440.00</td>
-        <td>&nbsp;</td>
-    </tr>
+    <?php
+    $res = mysqli_query($con, "SELECT * FROM `transaction` WHERE `account_1` = '1000' OR `account_2` = '1000' ");
+
+    for ($i = 0; $i < mysqli_num_rows($res); $i++) {
+        $data = mysqli_fetch_assoc($res);
+        $date = $data['date'];
+        $acc_1 = $data['account_1'];
+        $acc_2 = $data['account_2'];
+        $desc = $data['description'];
+        $amount = $data['amount'];
+        $type = $data['type'];
+
+        if ($acc_1 == $acc_2) continue;
+
+        echo "<tr>";
+        echo "<td>$date</td>";
+        echo "<td>$acc_2</td>";
+        echo "<td>$desc</td>";
+        if ($type == 1)
+            echo "<td style='text-align: right'>$amount</td>";
+        else
+            echo "<td>&nbsp;</td>";
+        if ($type == 2)
+            echo "<td style='text-align: right'>$amount</td>";
+        else
+            echo "<td>&nbsp;</td>";
+        echo "</tr>";
+    }
+    ?>
 </table>
 
 <?php

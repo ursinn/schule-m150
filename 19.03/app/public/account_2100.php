@@ -27,6 +27,7 @@
  */
 
 require '../template/header.php';
+require '../db.php';
 ?>
 
 <!-- Inhalt -->
@@ -39,13 +40,35 @@ require '../template/header.php';
         <th>Soll</th>
         <th>Haben</th>
     </tr>
-    <tr>
-        <td>01.01.2004</td>
-        <td>2100</td>
-        <td>Bareinlage</td>
-        <td>&nbsp;</td>
-        <td style="text-align: right">1000.00</td>
-    </tr>
+    <?php
+    $res = mysqli_query($con, "SELECT * FROM `transaction` WHERE `account_1` = '2100' OR `account_2` = '2100'");
+
+    for ($i = 0; $i < mysqli_num_rows($res); $i++) {
+        $data = mysqli_fetch_assoc($res);
+        $date = $data['date'];
+        $acc_1 = $data['account_1'];
+        $acc_2 = $data['account_2'];
+        $desc = $data['description'];
+        $amount = $data['amount'];
+        $type = $data['type'];
+
+        if ($acc_1 == $acc_2) continue;
+
+        echo "<tr>";
+        echo "<td>$date</td>";
+        echo "<td>$acc_2</td>";
+        echo "<td>$desc</td>";
+        if ($type == 1)
+            echo "<td style='text-align: right'>$amount</td>";
+        else
+            echo "<td>&nbsp;</td>";
+        if ($type == 2)
+            echo "<td style='text-align: right'>$amount</td>";
+        else
+            echo "<td>&nbsp;</td>";
+        echo "</tr>";
+    }
+    ?>
 </table>
 
 <?php

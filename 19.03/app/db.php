@@ -26,51 +26,5 @@
  * For more information, please refer to <http://unlicense.org>
  */
 
-require '../template/header.php';
-require '../db.php';
-?>
-
-<!-- Inhalt -->
-<h1>Konto 3000: Warenertrag</h1>
-<table style="padding: 0">
-    <tr>
-        <th>Datum</th>
-        <th>Gegenkonto</th>
-        <th>Text</th>
-        <th>Soll</th>
-        <th>Haben</th>
-    </tr>
-    <?php
-    $res = mysqli_query($con, "SELECT * FROM `transaction` WHERE `account_1` = '3000' OR `account_2` = '3000' ");
-
-    for ($i = 0; $i < mysqli_num_rows($res); $i++) {
-        $data = mysqli_fetch_assoc($res);
-        $date = $data['date'];
-        $acc_1 = $data['account_1'];
-        $acc_2 = $data['account_2'];
-        $desc = $data['description'];
-        $amount = $data['amount'];
-        $type = $data['type'];
-
-        if ($acc_1 == $acc_2) continue;
-
-        echo "<tr>";
-        echo "<td>$date</td>";
-        echo "<td>$acc_2</td>";
-        echo "<td>$desc</td>";
-        if ($type == 1)
-            echo "<td style='text-align: right'>$amount</td>";
-        else
-            echo "<td>&nbsp;</td>";
-        if ($type == 2)
-            echo "<td style='text-align: right'>$amount</td>";
-        else
-            echo "<td>&nbsp;</td>";
-        echo "</tr>";
-    }
-    ?>
-</table>
-
-<?php
-require '../template/footer.php';
-?>
+$con = mysqli_connect('localhost', 'root', '');
+mysqli_select_db($con, 'schule');
