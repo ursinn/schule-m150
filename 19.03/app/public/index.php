@@ -34,5 +34,12 @@ require '../template/header.php';
 <p>Willkommen beim Buchhaltungssystem von Ursin Filli.</p>
 
 <?php
+if (!isset($_SESSION['login'])) {
+    echo 'username: test1 / test2';
+    echo '<br>';
+    echo 'password: test123';
+    echo '<br>';
+    echo '<a href="/login.php">Login</a>';
+}
 require '../template/footer.php';
 ?>

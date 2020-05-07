@@ -25,6 +25,8 @@
  *
  * For more information, please refer to <http://unlicense.org>
  */
+
+session_start();
 ?>
 
 <!doctype html>
@@ -41,9 +43,15 @@
     <!-- Menu -->
     <table class="menu" style="padding: 0; width: 100%">
         <tr>
-            <th><a href="index.php">Home</a></th>
-            <th><a href="accounts.php">Kontenplan</a></th>
-            <th><a href="book.php">Hauptbuch</a></th>
-            <th><a href="booking.php">Buchung</a></th>
+            <?php
+            if (isset($_SESSION['login'])) {
+            ?>
+                <th><a href="index.php">Home</a></th>
+                <th><a href="accounts.php">Kontenplan</a></th>
+                <th><a href="book.php">Hauptbuch</a></th>
+                <th><a href="booking.php">Buchung</a></th>
+            <?php
+            }
+            ?>
         </tr>
     </table>

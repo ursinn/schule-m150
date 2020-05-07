@@ -27,8 +27,9 @@
  */
 
 require '../template/header.php';
-?>
 
+if (isset($_SESSION['login'])) {
+?>
 <!-- Inhalt -->
 <h1>Buchung</h1>
 <p>Um eine Buchung durchzuf&uuml;hren sind die folgenden vier Schritte notwendig:</p>
@@ -40,7 +41,10 @@ require '../template/header.php';
         der beiden betroffenen Konten an.
     </li>
 </ol>
-
 <?php
+} else {
+    echo "Nur angemeldete Benutzer können diese Informationen sehen";
+}
+
 require '../template/footer.php';
 ?>

@@ -28,8 +28,9 @@
 
 require '../template/header.php';
 require '../db.php';
-?>
 
+if (isset($_SESSION['login'])) {
+?>
 <!-- Inhalt -->
 <h1>Hauptbuch</h1>
 <table style="padding: 0">
@@ -74,7 +75,10 @@ require '../db.php';
     }
     ?>
 </table>
-
 <?php
+} else {
+    echo "Nur angemeldete Benutzer können diese Informationen sehen";
+}
+
 require '../template/footer.php';
 ?>

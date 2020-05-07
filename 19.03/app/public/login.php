@@ -29,51 +29,52 @@
 require '../template/header.php';
 require '../db.php';
 
-if (isset($_SESSION['login'])) {
-?>
-<!-- Inhalt -->
-<h1>Konto 1050: Warenbestand</h1>
-<table style="padding: 0">
-    <tr>
-        <th>Datum</th>
-        <th>Gegenkonto</th>
-        <th>Text</th>
-        <th>Soll</th>
-        <th>Haben</th>
-    </tr>
-    <?php
-    $res = mysqli_query($con, "SELECT * FROM `transaction` WHERE `account_1` = '1050' OR `account_2` = '1050' ");
+if(isset($_POST['name'])) {
+    $name = htmlentities(htmlspecialchars($_POST['name']));
+    $pw = htmlentities(htmlspecialchars($_POST['pw']));
+    $name = mysqli_real_escape_string($con, $name);
+    $pw = mysqli_real_escape_string($con, $pw);
 
-    for ($i = 0; $i < mysqli_num_rows($res); $i++) {
-        $data = mysqli_fetch_assoc($res);
-        $date = $data['date'];
-        $acc_1 = $data['account_1'];
-        $acc_2 = $data['account_2'];
-        $desc = $data['description'];
-        $amount = $data['amount'];
-        $type = $data['type'];
+    if (!empty($name) && !empty($pw)) {
+        $hash = "";
+        $res = mysqli_query($con, "SELECT password FROM `user` WHERE `username` = '$name'");
+        $num = mysqli_num_rows($res);
+        if ($num > 0) {
+            $data = mysqli_fetch_assoc($res);
+            $hash = $data['password'];
+        }
 
-        if ($acc_1 == $acc_2) continue;
+        $ok = password_verify($pw, $hash);
 
-        echo "<tr>";
-        echo "<td>$date</td>";
-        echo "<td>$acc_2</td>";
-        echo "<td>$desc</td>";
-        if ($type == 1)
-            echo "<td style='text-align: right'>$amount</td>";
-        else
-            echo "<td>&nbsp;</td>";
-        if ($type == 2)
-            echo "<td style='text-align: right'>$amount</td>";
-        else
-            echo "<td>&nbsp;</td>";
-        echo "</tr>";
+        if ($ok) {
+            $_SESSION['login'] = true;
+            header('Location: /index.php');
+        } else
+            echo "Name oder Passwort ist falsch!";
+    } else {
+        echo "Login Error";
     }
+    mysqli_close($con);
+}
+
+if (!isset($_SESSION['login'])) {
     ?>
-</table>
-<?php
+    <!-- Inhalt -->
+    <h1>Login</h1>
+    <form method="post">
+        <label for="name">
+            Username
+        </label>
+        <input type="text" name="name" id="name" autofocus required>
+        <label for="pw">
+            Password
+        </label>
+        <input type="password" name="pw" id="pw" required>
+        <input type="submit" value="Login">
+    </form>
+    <?php
 } else {
-    echo "Nur angemeldete Benutzer können diese Informationen sehen";
+    echo "Already Logged In!";
 }
 
 require '../template/footer.php';
